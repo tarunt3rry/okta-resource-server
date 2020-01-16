@@ -1,0 +1,64 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.5.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath 'com.google.cloud.tools:appengine-gradle-plugin:1.+'    // Latest 1.x.x release
+
+	}
+}
+appengine {  // App Engine tasks configuration
+	deploy {   // deploy configuration
+
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'war'                               // standard Web Archive plugin
+apply plugin: 'com.google.cloud.tools.appengine'  // App Engine tasks
+
+
+
+group = 'com.okta.springboottokenauth'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile('com.okta.spring:okta-spring-boot-starter:0.6.0')
+	compile('org.springframework.boot:spring-boot-starter-security')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile ('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.5.RELEASE')
+	compile 'com.google.appengine:appengine-api-1.0-sdk:+'  // Latest App Engine Api's
+	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+
+	compile 'jstl:jstl:1.2'
+	//testCompile('org.springframework.boot:spring-boot-starter-test')
+	//testCompile('org.springframework.security:spring-security-test')
+	testCompile 'junit:junit:4.12'
+	testCompile 'com.google.truth:truth:0.33'
+	testCompile 'org.mockito:mockito-all:1.10.19'
+
+	testCompile 'com.google.appengine:appengine-testing:+'
+	testCompile 'com.google.appengine:appengine-api-stubs:+'
+	testCompile 'com.google.appengine:appengine-tools-sdk:+'
+}
+
+/*
+	This is required to resolve a logging dependency conflict between the
+	okta-spring-boot-starter and the various spring dependencies.
+ */
+configurations.all {
+	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	exclude group: 'org.springframework.boot', module: 'logback-classic'
+}
